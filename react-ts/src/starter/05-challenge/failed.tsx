@@ -1,18 +1,11 @@
-type SimpleUser = {
-  type: "simple";
+type User = {
+  type: "simple" | "advance";
   name: string;
+  email?: string;
 };
-
-type AdvUser = {
-  type: "advance";
-  name: string;
-  email: string;
-};
-
-type User = SimpleUser | AdvUser;
 
 function Component(props: User): JSX.Element {
-  const { type, name } = props;
+  const { type, name, email } = props;
   console.log(type);
   return (
     <section
@@ -21,7 +14,7 @@ function Component(props: User): JSX.Element {
       }
     >
       <h2>Name: {name}</h2>
-      {type === "advance" && <h2>Email: {props.email.toLowerCase()}</h2>}
+      {email && <h2>Email: {email.toLowerCase()}</h2>}
     </section>
   );
 }
