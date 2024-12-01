@@ -5,10 +5,11 @@ import lottieGo from "./assets/lotties/triviaGO.json";
 import lottieThinking from "./assets/lotties/triviathink.json";
 import { IoSettingsOutline } from "react-icons/io5";
 import { PiRanking } from "react-icons/pi";
+import Settings from "./components/settings";
 
 function App() {
   const [pageCount, setPageCount] = useState<number>(2);
-
+  const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   useEffect(() => {
     const text = document.querySelector<HTMLSpanElement>(".typingText");
 
@@ -32,6 +33,10 @@ function App() {
     setPageCount(pageCount + 1);
   };
 
+  const handleSettingsModal = (): void => {
+    setIsSettingsOpen(true);
+  };
+
   return (
     <div className="relative flex items-center justify-center w-full min-h-screen text-center bg-gradient-to-tr from-violet-400 to-violet-200">
       {pageCount === 1 && (
@@ -47,6 +52,7 @@ function App() {
               className="cursor-pointer w-28"
             />
           </div>
+          <h1></h1>
         </div>
       )}
 
@@ -54,7 +60,11 @@ function App() {
         <>
           <div className="absolute flex flex-row items-center justify-between w-full px-6 text-white top-4">
             <div className="flex flex-col items-center justify-center gap-1">
-              <IoSettingsOutline size={20} color="white" />
+              <IoSettingsOutline
+                size={20}
+                color="white"
+                onClick={handleSettingsModal}
+              />
               <div>settings</div>
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
@@ -72,6 +82,7 @@ function App() {
           </div>
         </>
       )}
+      <Settings modalInfo={isSettingsOpen} setModalInfo={setIsSettingsOpen} />
     </div>
   );
 }
