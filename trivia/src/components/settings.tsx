@@ -1,24 +1,42 @@
-import React, { useState, useEffect, SetStateAction } from "react";
+import React, { useEffect, SetStateAction } from "react";
 import Modal from "./modal";
 import ModalHeader from "./modalHeader";
-
-type SettingsProps = {
-  modalInfo: boolean;
-  setModalInfo: (value: SetStateAction<boolean>) => void;
-};
 
 type Category = {
   id: number;
   name: string;
 };
 
-const Settings: React.FC<SettingsProps> = ({ modalInfo, setModalInfo }) => {
-  const [catagories, setCatagories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState(0);
-  const [selectedNumOfQuestions, setSelectedNumOfQuestions] = useState(5);
-  const [selectedDifficulty, setSelectedDifficulty] = useState("any");
-  const [selectedQuestionType, setSelectedQuestionType] = useState("any");
+// convert settings to a obj and use that way so its cleaner
+type SettingsProps = {
+  modalInfo: boolean;
+  setModalInfo: (value: SetStateAction<boolean>) => void;
+  catagories: Category[];
+  setCatagories: (value: SetStateAction<Category[]>) => void;
+  selectedCategory: number;
+  setSelectedCategory: (value: SetStateAction<number>) => void;
+  selectedNumOfQuestions: number;
+  setSelectedNumOfQuestions: (value: SetStateAction<number>) => void;
+  selectedDifficulty: string;
+  setSelectedDifficulty: (value: SetStateAction<string>) => void;
+  selectedQuestionType: string;
+  setSelectedQuestionType: (value: SetStateAction<string>) => void;
+};
 
+const Settings: React.FC<SettingsProps> = ({
+  modalInfo,
+  setModalInfo,
+  catagories,
+  setCatagories,
+  selectedCategory,
+  setSelectedCategory,
+  selectedNumOfQuestions,
+  setSelectedNumOfQuestions,
+  selectedDifficulty,
+  setSelectedDifficulty,
+  selectedQuestionType,
+  setSelectedQuestionType,
+}) => {
   const difficulties = ["any", "easy", "medium", "hard"];
 
   useEffect(() => {
@@ -29,7 +47,6 @@ const Settings: React.FC<SettingsProps> = ({ modalInfo, setModalInfo }) => {
         const response = await fetch(url);
         const data = await response.json();
         const trivia = data["trivia_categories"];
-        console.log(trivia);
         setCatagories(trivia);
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : "error:(";
@@ -38,7 +55,6 @@ const Settings: React.FC<SettingsProps> = ({ modalInfo, setModalInfo }) => {
     };
     fetchData();
   }, []);
-  console.log(selectedQuestionType);
 
   return (
     <Modal isOpen={modalInfo} setIsOpen={setModalInfo}>
@@ -56,13 +72,14 @@ const Settings: React.FC<SettingsProps> = ({ modalInfo, setModalInfo }) => {
             className="w-full p-2 border border-gray-300 rounded-md"
           >
             <option key={0} value={0}>
-              All Categories
+              Any Category
             </option>
-            {catagories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
+            {catagories.length > 0 &&
+              catagories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
           </select>
         </label>
 
@@ -71,6 +88,7 @@ const Settings: React.FC<SettingsProps> = ({ modalInfo, setModalInfo }) => {
         <label className="w-full">
           <span className="block mb-2 text-gray-700">Number Of Questions</span>
           <input
+            type="number"
             min={0}
             value={selectedNumOfQuestions}
             onChange={(e) => setSelectedNumOfQuestions(Number(e.target.value))}
